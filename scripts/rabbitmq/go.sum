@@ -1,0 +1,4 @@
+github.com/rabbitmq/amqp091-go v1.10.0 h1:STpn5XsHlHGcecLmMFCtg7mqq0RnD+zFr4uzukfVhBw=
+github.com/rabbitmq/amqp091-go v1.10.0/go.mod h1:Hy4jKW5kQART1u+JkDTF9YYOQUHXqMuhrgxOEeS7G4o=
+github.com/trend-me/golang-rabbitmq-lib v1.0.2 h1:UywvdvdslxoIZIyxbuSDhqA9DEczUcqsKGRJfVwqIcU=
+github.com/trend-me/golang-rabbitmq-lib v1.0.2/go.mod h1:+RdSrVhlVTILFcRf7St4dyeD4m23bGj5NO/jPTozW4k=

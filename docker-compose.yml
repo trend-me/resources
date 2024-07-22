@@ -1,0 +1,49 @@
+version: "3.5"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit
+      - RABBITMQ_DEFAULT_PASS=rabbit
+      - RABBITMQ_PLUGINS_DIR=/opt/rabbitmq/plugins:/usr/lib/rabbitmq/plugins
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./scripts/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./scripts/rabbitmq/log/:/var/log/rabbitmq/
+      - ./scripts/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:rw
+      - ./scripts/rabbitmq/plugins:/usr/lib/rabbitmq/plugins
+
+  db:
+    image: postgres:latest
+    hostname: db
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./scripts/postgres/ddl.sql:/docker-entrypoint-initdb.d/ddl.sql
+    deploy:
+      resources:
+        limits:
+          cpus: "0.13"
+          memory: "140MB"
+
+  go-app:
+    image: golang:1.22
+    container_name: go-app
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./scripts/rabbitmq:/app
+    working_dir: /app
+    command: ["sh", "-c", "sleep 30 && go run ./main.go"]
+
+volumes:
+  rabbitmq_data:
