@@ -15,10 +15,13 @@ FROM rabbitmq:${BASE_VERSION}-management-alpine
 
 ARG PLUGIN_VERSION
 
-COPY --from=builder --chown=rabbitmq:rabbitmq \
-    /scripts/rabbitmq/plugins/rabbitmq_delayed_message_exchange-${PLUGIN_VERSION}.ez \
-    $RABBITMQ_HOME/plugins/rabbitmq_delayed_message_exchange-${PLUGIN_VERSION}.ez
+# Copy plugin from builder stage
+COPY --from=builder /plugins/rabbitmq_delayed_message_exchange-${PLUGIN_VERSION}.ez $RABBITMQ_HOME/plugins/
 
+# Set the correct permissions for the .erlang.cookie
+RUN chmod 600 /var/lib/rabbitmq/.erlang.cookie
+
+# Enable RabbitMQ delayed message exchange plugin
 RUN rabbitmq-plugins enable --offline rabbitmq_delayed_message_exchange
 
 # Stage 1: Build the Go application
@@ -40,7 +43,7 @@ COPY . .
 RUN go build -o create-queues
 
 # Stage 2: Setup RabbitMQ with Go
-FROM rabbitmq:3.11-management
+FROM rabbitmq:${BASE_VERSION}-management-alpine
 
 # Copy the Go binary from the previous stage
 COPY --from=build /app/create-queues /usr/local/bin/create-queues
@@ -49,3 +52,8 @@ COPY --from=build /app/create-queues /usr/local/bin/create-queues
 ENV RABBITMQ_DEFAULT_USER=rabbit
 ENV RABBITMQ_DEFAULT_PASS=rabbit
 
+# Ensure the .erlang.cookie has correct permissions again, as this may be reset
+RUN chmod 600 /var/lib/rabbitmq/.erlang.cookie
+
+# Command to start RabbitMQ and the Go application
+CMD ["sh", "-c", "rabbitmq-server & create-queues"]

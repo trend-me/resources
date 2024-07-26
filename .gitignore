@@ -1,3 +1,5 @@
 ../.idea
 postgres-data
 .env
+./scripts/rabbitmq/data/*
+./scripts/rabbitmq/log/*
