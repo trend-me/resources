@@ -2,34 +2,33 @@ CREATE SCHEMA ai_road_map;
 
 CREATE TABLE "ai_road_map"."key_value_format" (
                                                   "id" uuid PRIMARY KEY,
-                                                  "payload_validator_id" uuid NOT NULL,
+                                                  "payload_validator_name" uuid NOT NULL,
                                                   "key" varchar,
                                                   "type" varchar,
                                                   "match" varchar,
                                                   "required" boolean,
-                                                  "children_payload_validator_id" uuid,
+                                                  "children_payload_validator_name" varchar,
                                                   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "ai_road_map"."payload_validator" (
-                                                   "id" uuid PRIMARY KEY,
-                                                   "name" varchar NOT NULL UNIQUE,
+                                                   "name" varchar PRIMARY KEY,
                                                    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                    "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE "ai_road_map"."key_value_format"
-    ADD FOREIGN KEY ("payload_validator_id")
-        REFERENCES "ai_road_map"."payload_validator" ("id");
+    ADD FOREIGN KEY ("payload_validator_name")
+        REFERENCES "ai_road_map"."payload_validator" ("name");
 
 ALTER TABLE "ai_road_map"."key_value_format"
-    ADD FOREIGN KEY ("children_payload_validator_id")
-        REFERENCES "ai_road_map"."payload_validator" ("id");
+    ADD FOREIGN KEY ("children_payload_validator_name")
+        REFERENCES "ai_road_map"."payload_validator" ("name");
 
 CREATE TABLE "ai_road_map"."prompt_road_map" (
-                                                 "response_validation_id" uuid,
-                                                 "metadata_validation_id" uuid,
+                                                 "response_validation_name" varchar,
+                                                 "metadata_validation_name" varchar,
                                                  "research_config_id" uuid,
                                                  "question_template" varchar,
                                                  "step" integer,
@@ -57,12 +56,12 @@ CREATE TABLE "ai_road_map"."prompt_road_map_config_execution" (
 );
 
 ALTER TABLE "ai_road_map"."prompt_road_map"
-    ADD FOREIGN KEY ("response_validation_id")
-        REFERENCES "ai_road_map"."payload_validator" ("id");
+    ADD FOREIGN KEY ("response_validation_name")
+        REFERENCES "ai_road_map"."payload_validator" ("name");
 
 ALTER TABLE "ai_road_map"."prompt_road_map"
-    ADD FOREIGN KEY ("metadata_validation_id")
-        REFERENCES "ai_road_map"."payload_validator" ("id");
+    ADD FOREIGN KEY ("metadata_validation_name")
+        REFERENCES "ai_road_map"."payload_validator" ("name");
 
 ALTER TABLE "ai_road_map"."prompt_road_map"
     ADD FOREIGN KEY ("research_config_id")
