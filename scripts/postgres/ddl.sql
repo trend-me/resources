@@ -14,7 +14,7 @@ CREATE TABLE "ai_road_map"."key_value_format" (
 
 CREATE TABLE "ai_road_map"."payload_validator" (
                                                    "id" uuid PRIMARY KEY,
-                                                   "name" varchar NOT NULL,
+                                                   "name" varchar NOT NULL UNIQUE,
                                                    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                    "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
