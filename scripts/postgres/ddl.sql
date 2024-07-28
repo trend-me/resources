@@ -2,11 +2,11 @@ CREATE SCHEMA ai_road_map;
 
 CREATE TABLE "ai_road_map"."key_value_format" (
                                                   "id" uuid PRIMARY KEY,
-                                                  "payload_validator_name" uuid NOT NULL,
-                                                  "key" varchar,
-                                                  "type" varchar,
+                                                  "payload_validator_name" varchar NOT NULL,
+                                                  "key" varchar  NOT NULL,
+                                                  "type" varchar  NOT NULL,
                                                   "match" varchar,
-                                                  "required" boolean,
+                                                  "required" boolean NOT NULL,
                                                   "children_payload_validator_name" varchar,
                                                   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -27,19 +27,18 @@ ALTER TABLE "ai_road_map"."key_value_format"
         REFERENCES "ai_road_map"."payload_validator" ("name");
 
 CREATE TABLE "ai_road_map"."prompt_road_map" (
-                                                 "response_validation_name" varchar,
-                                                 "metadata_validation_name" varchar,
-                                                 "research_config_id" uuid,
+                                                 "response_validation_name" varchar NOT NULL,
+                                                 "metadata_validation_name" varchar NOT NULL,
+                                                 "prompt_road_map_config_name" varchar NOT NULL,
                                                  "question_template" varchar,
-                                                 "step" integer,
-                                                 PRIMARY KEY ("research_config_id", "step"),
+                                                 "step" integer NOT NULL,
+                                                 PRIMARY KEY ("prompt_road_map_config_name", "step"),
                                                  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "ai_road_map"."prompt_road_map_config" (
-                                                        "id" uuid PRIMARY KEY,
-                                                        "name" varchar,
+                                                        "name" varchar PRIMARY KEY,
                                                         "total_steps" integer,
                                                         "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                         "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -47,10 +46,10 @@ CREATE TABLE "ai_road_map"."prompt_road_map_config" (
 
 CREATE TABLE "ai_road_map"."prompt_road_map_config_execution" (
                                                                   "id" uuid PRIMARY KEY,
-                                                                  "total_steps" integer,
-                                                                  "step_in_execution" integer,
-                                                                  "metadata" json,
-                                                                  "prompt_road_map_config_id" uuid,
+                                                                  "total_steps" integer NOT NULL,
+                                                                  "step_in_execution" integer NOT NULL,
+                                                                  "metadata" json NOT NULL,
+                                                                  "prompt_road_map_config_name" varchar NOT NULL,
                                                                   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                                   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -64,12 +63,12 @@ ALTER TABLE "ai_road_map"."prompt_road_map"
         REFERENCES "ai_road_map"."payload_validator" ("name");
 
 ALTER TABLE "ai_road_map"."prompt_road_map"
-    ADD FOREIGN KEY ("research_config_id")
-        REFERENCES "ai_road_map"."prompt_road_map_config" ("id");
+    ADD FOREIGN KEY ("prompt_road_map_config_name")
+        REFERENCES "ai_road_map"."prompt_road_map_config" ("name");
 
 ALTER TABLE "ai_road_map"."prompt_road_map_config_execution"
-    ADD FOREIGN KEY ("prompt_road_map_config_id")
-        REFERENCES "ai_road_map"."prompt_road_map_config" ("id");
+    ADD FOREIGN KEY ("prompt_road_map_config_name")
+        REFERENCES "ai_road_map"."prompt_road_map_config" ("name");
 
 -- AUTO Update at function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
