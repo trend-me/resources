@@ -1,7 +1,6 @@
 CREATE SCHEMA ai_road_map;
 
 CREATE TABLE "ai_road_map"."key_value_format" (
-                                                  "id" uuid PRIMARY KEY,
                                                   "payload_validator_name" varchar NOT NULL,
                                                   "key" varchar  NOT NULL,
                                                   "type" varchar  NOT NULL,
@@ -10,6 +9,8 @@ CREATE TABLE "ai_road_map"."key_value_format" (
                                                   "children_payload_validator_name" varchar,
                                                   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                                   "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                                  PRIMARY KEY ("payload_validator_name", "key"),
+
 );
 
 CREATE TABLE "ai_road_map"."payload_validator" (
