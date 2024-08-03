@@ -8,8 +8,8 @@ CREATE TABLE "ai_road_map"."key_value_format" (
                                                   "required" boolean NOT NULL,
                                                   "children_payload_validator_name" varchar,
                                                   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                                  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-                                                  PRIMARY KEY ("payload_validator_name", "key"),
+                                                  "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                                  PRIMARY KEY ("payload_validator_name", "key")
 
 );
 
